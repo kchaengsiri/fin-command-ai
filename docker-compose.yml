@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: fin_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app # Hot-reload Python code
+      - ./.agents/skills:/agents/skills # Share Agent Skills folder to Backend
+    environment:
+      - TZ=Asia/Bangkok # Set Timezone
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: fin_frontend
+    ports:
+      - "5173:5173" # Default port of Vite
+    volumes:
+      - ./frontend:/app # Hot-reload React code
+      - /app/node_modules # Prevent Volume from overwriting node_modules in Container
+    environment:
+      - VITE_API_URL=http://localhost:8000 # Point API to Backend
+    depends_on:
+      - backend
