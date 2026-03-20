@@ -11,8 +11,8 @@ A personal dashboard and command center to track real-time financial indicators 
 
 ## 3. Current Sprint & Status (Last Updated: 2026-03-20)
 *AI will automatically update this section.*
-- **In Progress:** Building the frontend UI for the AI Command Interface.
-- **Completed:** Defined core AI workflow (`GEMINI.md`), PRD, completed `MarketOverviewWidget`, **COMPLETED** `PortfolioWidget`, and implemented the `AI Insights Engine` backend (`/api/ai-insights`) to generate portfolio risk assessments using Gemini 2.5 Flash.
+- **In Progress:** Building the frontend widget for the proactive `AI Insights Engine` to complete the MVP feature.
+- **Completed:** Defined core AI workflow, PRD, `MarketOverviewWidget`, `PortfolioWidget`, Backend for `AI Insights Engine`, and the full-stack interactive `AI Command Interface` (Right-Side Drawer).
 - **Blockers:** None.
 
 ## 4. Future Roadmap

@@ -10,12 +10,12 @@
 - **API/Endpoint Used:** `GET /api/portfolio`
 - **Status:** Completed (Full-Stack)
 
-## 3. Feature Name: AI Insights Engine Backend
-- **Description:** A backend service that aggregates current market snapshots (VIX, S&P500, Gold) and the user's mutual fund portfolio data to generate a brief risk assessment and actionable portfolio adjustment suggestions.
-- **API/Endpoint Used:** `GET /api/ai-insights`
-- **Status:** Completed (Backend)
-
-## 4. Feature Name: AI Command Interface
-- **Description:** A sleek, Spotlight-style chat widget on the frontend that allows the user to ask natural language questions about their portfolio and macro trends. It connects to the backend where Gemini 2.5 Flash (via the `google-genai` SDK) analyzes the user's `portfolio.json` context and returns strategic financial advice.
+## 3. Feature Name: AI Command Interface
+- **Description:** A persistent, interactive Right-Side Drawer chat widget on the frontend. It allows the user to ask natural language questions, maintains chat history, and uses Gemini 2.5 Flash (via the `google-genai` SDK) to analyze the user's `portfolio.json` for strategic financial advice.
 - **API/Endpoint Used:** `POST /api/ask-ai`
 - **Status:** Completed (Full-Stack)
+
+## 4. Feature Name: AI Insights Engine
+- **Description:** A service that aggregates current market snapshots (VIX, S&P500, Gold) and the user's mutual fund portfolio data to generate a brief, proactive daily risk assessment.
+- **API/Endpoint Used:** `GET /api/ai-insights`
+- **Status:** Completed (Backend Only) - Frontend widget pending.
