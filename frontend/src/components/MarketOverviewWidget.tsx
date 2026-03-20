@@ -105,6 +105,7 @@ export const MarketOverviewWidget = () => {
     'GC=F': null,
   });
   const [loading, setLoading] = useState(true);
+  const [autoRefresh, setAutoRefresh] = useState(false);
 
   useEffect(() => {
     const fetchAllData = async () => {
@@ -139,10 +140,14 @@ export const MarketOverviewWidget = () => {
     };
 
     fetchAllData();
-    // Auto-refresh every 60 seconds
-    const interval = setInterval(fetchAllData, 60000); 
+    
+    let interval: ReturnType<typeof setInterval>;
+    if (autoRefresh) {
+      // Auto-refresh every 5 minutes (300 seconds)
+      interval = setInterval(fetchAllData, 300000); 
+    }
     return () => clearInterval(interval);
-  }, []);
+  }, [autoRefresh]);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -151,16 +156,34 @@ export const MarketOverviewWidget = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Market Pulse</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Real-time indicators fetched automatically</p>
         </div>
-        <div className="flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-full border border-emerald-100 dark:border-emerald-800/30 shadow-sm shadow-emerald-500/10">
+        <button 
+          onClick={() => setAutoRefresh(!autoRefresh)}
+          className={cn(
+            "flex items-center space-x-2 px-3 py-1.5 rounded-full border shadow-sm transition-colors cursor-pointer outline-none",
+            autoRefresh 
+              ? "bg-emerald-50 border-emerald-100 dark:bg-emerald-900/20 dark:border-emerald-800/30 shadow-emerald-500/10" 
+              : "bg-gray-50 border-gray-200 dark:bg-gray-800/50 dark:border-gray-700/50"
+          )}
+        >
           <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            {autoRefresh && (
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            )}
+            <span className={cn(
+              "relative inline-flex rounded-full h-2.5 w-2.5 z-10",
+              autoRefresh ? "bg-emerald-500" : "bg-gray-400 dark:bg-gray-500"
+            )}></span>
           </span>
-          <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Live API (60s)</span>
-        </div>
+          <span className={cn(
+            "text-[11px] font-bold uppercase tracking-wider",
+            autoRefresh ? "text-emerald-600 dark:text-emerald-400" : "text-gray-500 dark:text-gray-400"
+          )}>
+            Auto-Sync {autoRefresh ? '(5m)' : 'Off'}
+          </span>
+        </button>
       </div>
       
-      <div className="grid grid-cols-1 gap-6 flex-grow">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-grow">
         <StatCard 
           title="S&P 500 Index" 
           symbol="^GSPC" 
