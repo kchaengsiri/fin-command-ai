@@ -11,8 +11,8 @@ A personal dashboard and command center to track real-time financial indicators 
 
 ## 3. Current Sprint & Status (Last Updated: 2026-03-20)
 *AI will automatically update this section.*
-- **In Progress:** Building FastAPI endpoints for market data (`^VIX`, `^GSPC`) and wiring them to a new React `MarketOverviewWidget`.
-- **Completed:** Defined core AI workflow (`GEMINI.md`), PRD, created `fetch_market.py` script, and completed project setup & Docker environment (React-TS, FastAPI, Docker Compose).
+- **In Progress:** Integrating Portfolio Tracker and AI Insights Engine.
+- **Completed:** Defined core AI workflow (`GEMINI.md`), PRD, project setup, and completed `MarketOverviewWidget` wired to FastAPI endpoints (`^VIX`, `^GSPC`, `GC=F`).
 - **Blockers:** None.
 
 ## 4. Future Roadmap
