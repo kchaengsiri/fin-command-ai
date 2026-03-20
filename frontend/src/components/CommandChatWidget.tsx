@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Sparkles, Send, Loader2 } from 'lucide-react';
+import { Search, Sparkles, Send, Loader2, PanelRight } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -13,17 +13,24 @@ import { RightDrawer } from './RightDrawer';
 
 export const CommandChatWidget = () => {
   const [query, setQuery] = useState("");
+  const [drawerQuery, setDrawerQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<{role: 'user' | 'ai', content: string}[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!query.trim() || isLoading) return;
+  useEffect(() => {
+    if (isDrawerOpen) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, isLoading, isDrawerOpen]);
+
+  const handleQuerySubmit = async (text: string, clearText: () => void) => {
+    if (!text.trim() || isLoading) return;
     
-    const userMsg = query;
+    const userMsg = text;
     setIsLoading(true);
-    setQuery("");
+    clearText();
     setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
     setIsDrawerOpen(true);
     
@@ -50,6 +57,16 @@ export const CommandChatWidget = () => {
     }
   };
 
+  const submitMain = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleQuerySubmit(query, () => setQuery(""));
+  };
+
+  const submitDrawer = (e: React.FormEvent) => {
+    e.preventDefault();
+    handleQuerySubmit(drawerQuery, () => setDrawerQuery(""));
+  };
+
   return (
     <div className="w-full flex flex-col items-center">
       <motion.div 
@@ -62,7 +79,7 @@ export const CommandChatWidget = () => {
         <div className="absolute -inset-0.5 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-emerald-500 opacity-20 group-hover:opacity-40 blur-lg transition-opacity duration-500 flex-shrink-0"></div>
         
         <form 
-          onSubmit={handleSubmit}
+          onSubmit={submitMain}
           className={cn(
             "relative flex items-center w-full rounded-2xl border p-2 shadow-2xl transition-all duration-300 z-10",
             "bg-white/90 border-gray-200/50 dark:bg-[#111]/90 dark:border-white/10 backdrop-blur-2xl"
@@ -82,6 +99,15 @@ export const CommandChatWidget = () => {
           />
           
           <button 
+            type="button"
+            onClick={() => setIsDrawerOpen(true)}
+            className="ml-1 p-3 rounded-xl flex items-center justify-center text-gray-400 hover:text-indigo-500 hover:bg-indigo-50 dark:hover:bg-white/5 transition-all"
+            aria-label="Open Chat History"
+          >
+            <PanelRight className="w-5 h-5" />
+          </button>
+
+          <button 
             type="submit"
             disabled={!query.trim() || isLoading}
             className={cn(
@@ -97,7 +123,29 @@ export const CommandChatWidget = () => {
       </motion.div>
       
       {/* Slide-Over Drawer for Interactive Chat History */}
-      <RightDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+      <RightDrawer 
+        isOpen={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)}
+        footer={
+          <form onSubmit={submitDrawer} className="flex items-center gap-2 relative">
+            <input
+              type="text"
+              value={drawerQuery}
+              onChange={(e) => setDrawerQuery(e.target.value)}
+              disabled={isLoading}
+              placeholder="Ask a follow-up..."
+              className="w-full bg-slate-800/50 border border-white/10 rounded-xl py-3 pl-4 pr-12 text-sm text-gray-200 placeholder-gray-500 outline-none focus:ring-1 focus:ring-indigo-500 transition-all disabled:opacity-50"
+            />
+            <button
+              type="submit"
+              disabled={!drawerQuery.trim() || isLoading}
+              className="absolute right-2 p-1.5 rounded-lg bg-indigo-500 text-white hover:bg-indigo-600 disabled:bg-slate-700 disabled:text-gray-500 transition-colors"
+            >
+              {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+            </button>
+          </form>
+        }
+      >
         {messages.map((msg, idx) => (
           <motion.div 
             key={idx} 
@@ -144,6 +192,7 @@ export const CommandChatWidget = () => {
              </div>
           </motion.div>
         )}
+        <div ref={messagesEndRef} className="h-4" />
       </RightDrawer>
     </div>
   );

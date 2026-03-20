@@ -5,9 +5,10 @@ interface RightDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   children: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
-export const RightDrawer = ({ isOpen, onClose, children }: RightDrawerProps) => {
+export const RightDrawer = ({ isOpen, onClose, children, footer }: RightDrawerProps) => {
   return (
     <AnimatePresence>
       {isOpen && (
@@ -41,6 +42,11 @@ export const RightDrawer = ({ isOpen, onClose, children }: RightDrawerProps) => 
             <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-5">
               {children}
             </div>
+            {footer && (
+              <div className="p-4 border-t border-white/10 bg-slate-900 shrink-0">
+                {footer}
+              </div>
+            )}
           </motion.div>
         </div>
       )}
