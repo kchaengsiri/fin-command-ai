@@ -78,7 +78,7 @@ export const PortfolioWidget = () => {
             "text-xl font-bold tracking-tight",
             isPositive ? "text-emerald-500" : "text-red-500"
           )}>
-            {isPositive ? '+' : ''}{totalPL.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            {isPositive ? '+' : '-'}฿{Math.abs(totalPL).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
         </div>
       </div>
@@ -118,10 +118,10 @@ export const PortfolioWidget = () => {
                       {item.amount.toLocaleString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right">
-                      ${item.avgCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      ฿{item.avgCost.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right font-medium text-gray-900 dark:text-white">
-                      ${item.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                      ฿{item.currentPrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right font-bold">
                       <div className={cn(
@@ -130,7 +130,7 @@ export const PortfolioWidget = () => {
                           ? "bg-emerald-50 text-emerald-600 border border-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20" 
                           : "bg-red-50 text-red-600 border border-red-100 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20"
                       )}>
-                        {isItemPositive ? '+' : ''}${Math.abs(pl).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                        {isItemPositive ? '+' : '-'}฿{Math.abs(pl).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </div>
                     </td>
                   </motion.tr>
