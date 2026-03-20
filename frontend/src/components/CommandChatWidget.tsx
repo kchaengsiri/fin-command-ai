@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, Send, Loader2 } from 'lucide-react';
+import { Search, Sparkles, Send, Loader2, X } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -97,11 +98,32 @@ export const CommandChatWidget = () => {
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="w-[95%] mx-auto mt-4 p-4 rounded-xl border border-indigo-100 dark:border-indigo-900/30 bg-indigo-50/80 dark:bg-indigo-950/20 backdrop-blur-md shadow-lg shadow-indigo-500/5 text-sm font-medium text-indigo-900 dark:text-indigo-200"
+            className="w-[95%] relative mx-auto mt-6 p-6 rounded-xl border border-white/10 bg-slate-900/95 backdrop-blur shadow-2xl overflow-y-auto max-h-[60vh] text-sm/relaxed text-gray-200"
           >
-            <div className="flex items-start space-x-3">
-              <Sparkles className="w-5 h-5 text-indigo-500 flex-shrink-0 mt-0.5" />
-              <p className="leading-relaxed">{response}</p>
+            <button
+              onClick={() => setResponse(null)}
+              className="absolute top-4 right-4 p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <div className="flex items-start space-x-4 pt-1">
+              <Sparkles className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0 pr-6">
+                <ReactMarkdown
+                  components={{
+                    p: ({ node, ...props }: any) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
+                    ul: ({ node, ...props }: any) => <ul className="list-disc pl-5 mb-4 space-y-1.5" {...props} />,
+                    ol: ({ node, ...props }: any) => <ol className="list-decimal pl-5 mb-4 space-y-1.5" {...props} />,
+                    li: ({ node, ...props }: any) => <li className="marker:text-indigo-400" {...props} />,
+                    strong: ({ node, ...props }: any) => <strong className="text-white font-semibold" {...props} />,
+                    h1: ({ node, ...props }: any) => <h1 className="text-xl font-bold text-white mb-3" {...props} />,
+                    h2: ({ node, ...props }: any) => <h2 className="text-lg font-bold text-white mb-3 mt-5" {...props} />,
+                    h3: ({ node, ...props }: any) => <h3 className="text-base font-bold text-white mb-2" {...props} />,
+                  }}
+                >
+                  {response}
+                </ReactMarkdown>
+              </div>
             </div>
           </motion.div>
         )}
