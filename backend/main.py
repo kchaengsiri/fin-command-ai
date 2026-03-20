@@ -108,7 +108,7 @@ The user asks: {request.message}
 Provide a concise, strategic, and data-driven response."""
 
         # 3. Initialize and Call Gemini
-        model = genai.GenerativeModel('gemini-1.5-pro-latest')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         response = model.generate_content(prompt)
         
         return {
@@ -121,3 +121,53 @@ Provide a concise, strategic, and data-driven response."""
             "status": "error",
             "reply": f"AI Engine Error: {str(e)}"
         }
+
+def get_market_snapshot():
+    """Helper to fetch current snapshot for S&P500, VIX, and Gold."""
+    symbols = {"S&P500": "^GSPC", "VIX": "^VIX", "Gold": "GC=F"}
+    snapshot = {}
+    for name, sym in symbols.items():
+        try:
+            ticker = yf.Ticker(sym)
+            history = ticker.history(period="1d")
+            if not history.empty:
+                snapshot[name] = round(float(history['Close'].iloc[-1]), 2)
+        except Exception as e:
+            logging.error(f"Error fetching snapshot for {sym}: {str(e)}")
+    return snapshot
+
+@app.get("/api/ai-insights")
+def ai_insights():
+    """
+    Automated Daily AI Insights combining Market Data and Portfolio.
+    """
+    try:
+        if not gemini_api_key:
+            return {
+                "status": "error",
+                "reply": "API Key is missing. Please configure GEMINI_API_KEY in the backend .env file."
+            }
+            
+        portfolio_data = get_portfolio()
+        market_data = get_market_snapshot()
+        
+        prompt = f"""You are an expert macroeconomic analyst and financial advisor. 
+Here is the current market snapshot: 
+{json.dumps(market_data, ensure_ascii=False)}
+
+Here is my current mutual fund and ETF portfolio data: 
+{json.dumps(portfolio_data, ensure_ascii=False)}
+
+Based on the macroeconomic indicators and my portfolio, provide a brief risk assessment and 2-3 actionable portfolio adjustment suggestions. Keep it concise, strategic, and data-driven."""
+
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(prompt)
+        
+        return {
+            "status": "success", 
+            "reply": response.text
+        }
+    except Exception as e:
+        logging.error(f"Error generating AI insights: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+

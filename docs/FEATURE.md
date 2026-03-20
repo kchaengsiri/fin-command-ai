@@ -1,5 +1,6 @@
 # Feature Documentation
 
-## 1. Feature Name: (Placeholder)
-- **Description:** - **API/Endpoint Used:**
-- **Status:** Not Started
+## 1. Feature Name: AI Insights Engine Backend
+- **Description:** A FastAPI backend endpoint that aggregates current market snapshot (VIX, S&P500, Gold) and the user's mutual fund portfolio data, and queries Gemini 2.5 Flash to generate a brief risk assessment and actionable portfolio adjustment suggestions. Also fixes the conversational `/api/ask-ai` endpoint model.
+- **API/Endpoint Used:** `GET /api/ai-insights`, `POST /api/ask-ai`
+- **Status:** Completed (Backend)

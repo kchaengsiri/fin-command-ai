@@ -11,8 +11,8 @@ A personal dashboard and command center to track real-time financial indicators 
 
 ## 3. Current Sprint & Status (Last Updated: 2026-03-20)
 *AI will automatically update this section.*
-- **In Progress:** Path B: Building the AI Command Interface for macroeconomic and portfolio analysis.
-- **Completed:** Defined core AI workflow (`GEMINI.md`), PRD, completed `MarketOverviewWidget` wired to FastAPI endpoints, **COMPLETED** `PortfolioWidget` and the `/api/portfolio` endpoint incorporating real Thai Fund data (SCB RMF/SSF).
+- **In Progress:** Building the frontend UI for the AI Command Interface.
+- **Completed:** Defined core AI workflow (`GEMINI.md`), PRD, completed `MarketOverviewWidget`, **COMPLETED** `PortfolioWidget`, and implemented the `AI Insights Engine` backend (`/api/ai-insights`) to generate portfolio risk assessments using Gemini 2.5 Flash.
 - **Blockers:** None.
 
 ## 4. Future Roadmap
