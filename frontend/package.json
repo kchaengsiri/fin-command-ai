@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "docker:sync": "cd .. && docker-compose exec frontend pnpm install"
   },
   "dependencies": {
     "clsx": "^2.1.1",

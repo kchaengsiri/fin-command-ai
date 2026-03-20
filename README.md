@@ -44,6 +44,13 @@ fin-command-ai/
 
 If you are an AI assistant (like Gemini) contributing to this project, you **MUST** read `GEMINI.md` before generating any code or modifying files to ensure context persistence and adherence to the project's strict workflow rules.
 
+## 🛠 Useful Docker Commands
+
+- **Sync Frontend Dependencies:** If you or the AI Agent install a new package locally via `pnpm install`, run this command from the root directory to sync the Docker container:
+```bash
+docker-compose exec frontend pnpm install
+```
+
 ## 📄 License
 
 MIT License

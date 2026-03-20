@@ -15,7 +15,7 @@ You MUST strictly follow these rules whenever you generate code, fix bugs, or ad
 2. **Update `docs/CHANGELOG.md`:** Document every code change, bug fix, or refactor immediately.
 3. **Update `docs/FEATURE.md`:** Document new features, including the logic and FastAPI endpoints used, once completed.
 4. **Update `PRD.md`:** Keep the "Current Sprint & Status" section updated based on the latest progress.
-
+5. **Docker Dependency Sync:** Whenever installing new npm/pnpm packages in the `/frontend` directory via terminal or MCP tools, you MUST explicitly remind the user to run `docker-compose exec frontend pnpm install` from the root directory to ensure the Docker container remains synchronized.
 
 ## Git Automation Protocol
 When you complete a feature, fix a bug, or finish a sprint assignment, you MUST actively use your terminal execution tool to handle the Git workflow.
