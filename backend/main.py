@@ -6,7 +6,7 @@ import logging
 import os
 import json
 from dotenv import load_dotenv
-import google.generativeai as genai
+from google import genai
 
 load_dotenv()
 
@@ -16,8 +16,9 @@ app = FastAPI(title="Fin Command AI API", version="1.0.0")
 # Configure Gemini AI Brain
 gemini_api_key = os.getenv("GEMINI_API_KEY")
 if gemini_api_key:
-    genai.configure(api_key=gemini_api_key)
+    client = genai.Client(api_key=gemini_api_key)
 else:
+    client = None
     logging.warning("GEMINI_API_KEY is not set in environment variables.")
 
 # Configure CORS to allow requests from the Vite React frontend
@@ -108,8 +109,10 @@ The user asks: {request.message}
 Provide a concise, strategic, and data-driven response."""
 
         # 3. Initialize and Call Gemini
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt
+        )
         
         return {
             "status": "success", 
@@ -160,8 +163,10 @@ Here is my current mutual fund and ETF portfolio data:
 
 Based on the macroeconomic indicators and my portfolio, provide a brief risk assessment and 2-3 actionable portfolio adjustment suggestions. Keep it concise, strategic, and data-driven."""
 
-        model = genai.GenerativeModel('gemini-2.5-flash')
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt
+        )
         
         return {
             "status": "success", 
