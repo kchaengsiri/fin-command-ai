@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { TrendingUp, DollarSign, AlertTriangle } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { LineChart, Line, ResponsiveContainer } from 'recharts';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -14,7 +15,22 @@ interface MarketData {
   status: string;
 }
 
+const generateMockTrendData = (basePrice: number) => {
+  return Array.from({ length: 20 }, (_, i) => ({
+    time: i,
+    value: basePrice * (1 + (Math.random() * 0.04 - 0.02))
+  }));
+};
+
 const StatCard = ({ title, symbol, value, icon: Icon, loading, isNegativeBg = false }: any) => {
+  const [trendData, setTrendData] = useState<{time: number, value: number}[]>([]);
+  
+  useEffect(() => {
+    if (value) {
+      setTrendData(generateMockTrendData(value));
+    }
+  }, [value]);
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 15 }}
@@ -22,12 +38,12 @@ const StatCard = ({ title, symbol, value, icon: Icon, loading, isNegativeBg = fa
       transition={{ duration: 0.4 }}
       whileHover={{ y: -4, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
       className={cn(
-        "relative overflow-hidden rounded-2xl border p-6 shadow-sm transition-colors duration-200",
-        "bg-white/80 border-gray-200/50 dark:bg-gray-900/60 dark:border-gray-800/50",
+        "relative overflow-hidden rounded-2xl border p-6 shadow-sm transition-colors duration-200 flex flex-col justify-between",
+        "bg-white/80 border-gray-200/50 dark:bg-[#0a0a0a]/80 dark:border-white/10",
         "backdrop-blur-xl"
       )}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-2">
         <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400">{title}</h3>
         <div className={cn(
           "p-2 rounded-xl border",
@@ -39,7 +55,7 @@ const StatCard = ({ title, symbol, value, icon: Icon, loading, isNegativeBg = fa
         </div>
       </div>
       
-      <div className="flex items-baseline space-x-2">
+      <div className="flex items-baseline space-x-2 z-10 relative mt-2">
         {loading ? (
           <div className="h-10 w-28 bg-gray-200 dark:bg-gray-800 rounded animate-pulse"></div>
         ) : (
@@ -51,13 +67,31 @@ const StatCard = ({ title, symbol, value, icon: Icon, loading, isNegativeBg = fa
           </span>
         )}
       </div>
-      <div className="mt-4 flex items-center justify-between text-xs font-semibold tracking-wider uppercase">
+      <div className="mt-1 flex items-center justify-between text-[11px] font-bold tracking-wider uppercase z-10 relative">
         <span className="text-gray-400 dark:text-gray-500">{symbol}</span>
       </div>
       
+      {/* Sparkline Chart */}
+      {!loading && trendData.length > 0 && (
+        <div className="h-16 w-full mt-4 -mx-2 -mb-2 opacity-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={trendData}>
+              <Line 
+                type="monotone" 
+                dataKey="value" 
+                stroke={isNegativeBg ? "#ef4444" : "#6366f1"} 
+                strokeWidth={2.5} 
+                dot={false} 
+                isAnimationActive={true} 
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      
       {/* Decorative gradient blur in background */}
       <div className={cn(
-        "absolute -right-4 -top-4 -z-10 h-24 w-24 rounded-full blur-2xl opacity-20",
+        "absolute -right-4 -top-4 -z-10 h-32 w-32 rounded-full blur-[40px] opacity-20",
         isNegativeBg ? "bg-red-500" : "bg-indigo-500"
       )} />
     </motion.div>
@@ -76,9 +110,15 @@ export const MarketOverviewWidget = () => {
     const fetchAllData = async () => {
       try {
         const symbols = ['^VIX', '^GSPC', 'GC=F'];
+        // Note: Using hardcoded API proxy address
+        let apiUrl = "http://localhost:8000";
+        if (typeof import.meta.env.VITE_API_URL !== "undefined") {
+            apiUrl = import.meta.env.VITE_API_URL;
+        }
+
         const results = await Promise.all(
           symbols.map(sym => 
-            fetch(import.meta.env.VITE_API_URL + `/api/market?symbol=${encodeURIComponent(sym)}`)
+            fetch(`${apiUrl}/api/market?symbol=${encodeURIComponent(sym)}`)
               .then(res => res.json())
           )
         );
@@ -99,27 +139,28 @@ export const MarketOverviewWidget = () => {
     };
 
     fetchAllData();
-    const interval = setInterval(fetchAllData, 300000); // 5 min
+    // Auto-refresh every 60 seconds
+    const interval = setInterval(fetchAllData, 60000); 
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="w-full max-w-5xl mx-auto my-12 px-4">
-      <div className="mb-8 flex items-end justify-between">
+    <div className="w-full h-full flex flex-col">
+      <div className="mb-6 flex items-end justify-between">
         <div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Market Pulse</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">Real-time indicators fetched directly from backend agents</p>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">Market Pulse</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Real-time indicators fetched automatically</p>
         </div>
-        <div className="flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-full border border-emerald-100 dark:border-emerald-800/30">
+        <div className="flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-900/20 px-3 py-1.5 rounded-full border border-emerald-100 dark:border-emerald-800/30 shadow-sm shadow-emerald-500/10">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
           </span>
-          <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Live API</span>
+          <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Live API (60s)</span>
         </div>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 flex-grow">
         <StatCard 
           title="S&P 500 Index" 
           symbol="^GSPC" 
