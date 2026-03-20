@@ -148,7 +148,7 @@ def ai_insights():
         if not gemini_api_key:
             return {
                 "status": "error",
-                "reply": "API Key is missing. Please configure GEMINI_API_KEY in the backend .env file."
+                "insights": "API Key is missing. Please configure GEMINI_API_KEY in the backend .env file."
             }
             
         portfolio_data = get_portfolio()
@@ -170,7 +170,7 @@ Based on the macroeconomic indicators and my portfolio, provide a brief risk ass
         
         return {
             "status": "success", 
-            "reply": response.text
+            "insights": response.text
         }
     except Exception as e:
         logging.error(f"Error generating AI insights: {str(e)}")
