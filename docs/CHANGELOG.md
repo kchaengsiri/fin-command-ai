@@ -13,3 +13,4 @@
 - **[2026-03-20]** - `Changed` - Formatted Portfolio metrics to reliably render THB (฿) currency natively.
 - **[2026-03-20]** - `Added` - Implemented the AI Insights Engine backend (`GET /api/ai-insights`) to generate daily risk assessments and portfolio suggestions using Gemini 2.5 Flash.
 - **[2026-03-20]** - `Fixed` - Fixed Gemini model name for the conversational `/api/ask-ai` endpoint.
+- **[2026-03-20]** - `Changed` - Migrated the backend from the deprecated `google-generativeai` package to the newly supported `google-genai` SDK.
