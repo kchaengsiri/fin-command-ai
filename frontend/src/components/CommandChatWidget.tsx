@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Sparkles, Send, Loader2, X } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Search, Sparkles, Send, Loader2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -9,17 +9,23 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+import { RightDrawer } from './RightDrawer';
+
 export const CommandChatWidget = () => {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [response, setResponse] = useState<string | null>(null);
+  const [messages, setMessages] = useState<{role: 'user' | 'ai', content: string}[]>([]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim() || isLoading) return;
     
+    const userMsg = query;
     setIsLoading(true);
-    setResponse(null);
+    setQuery("");
+    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    setIsDrawerOpen(true);
     
     try {
       let apiUrl = "http://localhost:8000";
@@ -30,16 +36,15 @@ export const CommandChatWidget = () => {
       const res = await fetch(`${apiUrl}/api/ask-ai`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: query }),
+        body: JSON.stringify({ message: userMsg }),
       });
       
       if (!res.ok) throw new Error("Failed to reach AI");
       const data = await res.json();
-      setResponse(data.reply);
-      setQuery("");
+      setMessages(prev => [...prev, { role: 'ai', content: data.reply }]);
     } catch (error) {
       console.error(error);
-      setResponse("Error connecting to the Command Center AI.");
+      setMessages(prev => [...prev, { role: 'ai', content: "Error connecting to the Command Center AI." }]);
     } finally {
       setIsLoading(false);
     }
@@ -91,43 +96,55 @@ export const CommandChatWidget = () => {
         </form>
       </motion.div>
       
-      {/* AI Response Area */}
-      <AnimatePresence>
-        {response && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="w-[95%] relative mx-auto mt-6 p-6 rounded-xl border border-white/10 bg-slate-900/95 backdrop-blur shadow-2xl overflow-y-auto max-h-[60vh] text-sm/relaxed text-gray-200"
+      {/* Slide-Over Drawer for Interactive Chat History */}
+      <RightDrawer isOpen={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+        {messages.map((msg, idx) => (
+          <motion.div 
+            key={idx} 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={cn("flex flex-col w-full", msg.role === 'user' ? "items-end" : "items-start")}
           >
-            <button
-              onClick={() => setResponse(null)}
-              className="absolute top-4 right-4 p-1.5 rounded-md text-gray-400 hover:text-white hover:bg-white/10 transition-colors"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <div className="flex items-start space-x-4 pt-1">
-              <Sparkles className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
-              <div className="flex-1 min-w-0 pr-6">
-                <ReactMarkdown
-                  components={{
-                    p: ({ node, ...props }: any) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
-                    ul: ({ node, ...props }: any) => <ul className="list-disc pl-5 mb-4 space-y-1.5" {...props} />,
-                    ol: ({ node, ...props }: any) => <ol className="list-decimal pl-5 mb-4 space-y-1.5" {...props} />,
-                    li: ({ node, ...props }: any) => <li className="marker:text-indigo-400" {...props} />,
-                    strong: ({ node, ...props }: any) => <strong className="text-white font-semibold" {...props} />,
-                    h1: ({ node, ...props }: any) => <h1 className="text-xl font-bold text-white mb-3" {...props} />,
-                    h2: ({ node, ...props }: any) => <h2 className="text-lg font-bold text-white mb-3 mt-5" {...props} />,
-                    h3: ({ node, ...props }: any) => <h3 className="text-base font-bold text-white mb-2" {...props} />,
-                  }}
-                >
-                  {response}
-                </ReactMarkdown>
-              </div>
+            <div className={cn(
+              "max-w-[90%] p-4 rounded-xl text-sm/relaxed leading-relaxed text-left shadow-md",
+              msg.role === 'user' 
+                ? "bg-indigo-600 text-white rounded-tr-sm" 
+                : "bg-slate-800 text-gray-200 border border-white/10 rounded-tl-sm ring-1 ring-white/5"
+            )}>
+              {msg.role === 'ai' ? (
+                <div className="flex items-start space-x-3">
+                  <Sparkles className="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0 font-medium">
+                    <ReactMarkdown
+                      components={{
+                        p: ({ node, ...props }: any) => <p className="mb-4 last:mb-0 leading-relaxed" {...props} />,
+                        ul: ({ node, ...props }: any) => <ul className="list-disc pl-5 mb-4 space-y-1.5" {...props} />,
+                        ol: ({ node, ...props }: any) => <ol className="list-decimal pl-5 mb-4 space-y-1.5" {...props} />,
+                        li: ({ node, ...props }: any) => <li className="marker:text-indigo-400" {...props} />,
+                        strong: ({ node, ...props }: any) => <strong className="text-white font-semibold" {...props} />,
+                        h1: ({ node, ...props }: any) => <h1 className="text-xl font-bold text-white mb-3" {...props} />,
+                        h2: ({ node, ...props }: any) => <h2 className="text-lg font-bold text-white mb-3 mt-5" {...props} />,
+                        h3: ({ node, ...props }: any) => <h3 className="text-base font-bold text-white mb-2" {...props} />,
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
+                </div>
+              ) : (
+                msg.content
+              )}
             </div>
           </motion.div>
+        ))}
+        {isLoading && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col w-full items-start">
+             <div className="max-w-[85%] p-4 rounded-xl rounded-tl-sm bg-slate-800/80 text-gray-200 border border-white/10 flex items-center gap-3 text-sm shadow-md">
+                <Loader2 className="w-4 h-4 animate-spin text-indigo-400" /> Thinking...
+             </div>
+          </motion.div>
         )}
-      </AnimatePresence>
+      </RightDrawer>
     </div>
   );
 };
