@@ -1,12 +1,24 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 import yfinance as yf
 import logging
 import os
 import json
+from dotenv import load_dotenv
+import google.generativeai as genai
+
+load_dotenv()
 
 # Initialize the FastAPI application
 app = FastAPI(title="Fin Command AI API", version="1.0.0")
+
+# Configure Gemini AI Brain
+gemini_api_key = os.getenv("GEMINI_API_KEY")
+if gemini_api_key:
+    genai.configure(api_key=gemini_api_key)
+else:
+    logging.warning("GEMINI_API_KEY is not set in environment variables.")
 
 # Configure CORS to allow requests from the Vite React frontend
 app.add_middleware(
@@ -67,3 +79,45 @@ def get_portfolio():
     except Exception as e:
         logging.error(f"Error reading portfolio data: {str(e)}")
         raise HTTPException(status_code=500, detail="Internal Server Error")
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/api/ask-ai")
+def ask_ai(request: ChatRequest):
+    """
+    Real AI Command Interface powered by Gemini.
+    """
+    try:
+        if not gemini_api_key:
+            return {
+                "status": "error",
+                "reply": "API Key is missing. Please configure GEMINI_API_KEY in the backend .env file."
+            }
+            
+        # 1. Read portfolio
+        portfolio_data = get_portfolio()
+        
+        # 2. Construct prompt
+        prompt = f"""You are an expert macroeconomic analyst and financial advisor. 
+Here is my current mutual fund and ETF portfolio data: 
+{json.dumps(portfolio_data, ensure_ascii=False)}
+
+The user asks: {request.message}
+
+Provide a concise, strategic, and data-driven response."""
+
+        # 3. Initialize and Call Gemini
+        model = genai.GenerativeModel('gemini-1.5-pro-latest')
+        response = model.generate_content(prompt)
+        
+        return {
+            "status": "success", 
+            "reply": response.text
+        }
+    except Exception as e:
+        logging.error(f"Error generating AI response: {str(e)}")
+        return {
+            "status": "error",
+            "reply": f"AI Engine Error: {str(e)}"
+        }
