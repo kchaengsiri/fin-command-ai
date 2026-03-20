@@ -1,0 +1,7 @@
+[
+  { "id": "1", "symbol": "SCBRM1", "name": "RMF ตราสารหนี้ระยะสั้นของไทย", "type": "Thai Fund", "amount": 1312.9525, "avgCost": 15.2831, "currentPrice": 15.3151 },
+  { "id": "2", "symbol": "SCBRMGHC", "name": "RMF หุ้นนวัตกรรมด้านสุขภาพและการแพทย์", "type": "Thai Fund", "amount": 575.6691, "avgCost": 17.2564, "currentPrice": 16.9385 },
+  { "id": "3", "symbol": "SCBRMS50", "name": "RMF SET50", "type": "Thai Fund", "amount": 1192.7196, "avgCost": 16.7684, "currentPrice": 19.1749 },
+  { "id": "4", "symbol": "SCBS&P500(SSFE)", "name": "SCB S&P500 (SSFE)", "type": "Thai Fund", "amount": 995.5882, "avgCost": 31.9862, "currentPrice": 30.9926 },
+  { "id": "5", "symbol": "SCBSFFPLU(SSFE)", "name": "ตราสารหนี้ระยะสั้นทั้งไทยและต่างประเทศ", "type": "Thai Fund", "amount": 1935.1387, "avgCost": 11.8215, "currentPrice": 12.0228 }
+]

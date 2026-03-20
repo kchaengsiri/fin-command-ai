@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import yfinance as yf
 import logging
+import os
+import json
 
 # Initialize the FastAPI application
 app = FastAPI(title="Fin Command AI API", version="1.0.0")
@@ -50,3 +52,18 @@ def fetch_market(symbol: str):
     except Exception as e:
         logging.error(f"Error fetching data for {symbol}: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/api/portfolio")
+def get_portfolio():
+    """
+    Reads and returns the portfolio holdings from the local JSON data storage.
+    """
+    file_path = os.path.join(os.path.dirname(__file__), "data", "portfolio.json")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+    except Exception as e:
+        logging.error(f"Error reading portfolio data: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal Server Error")

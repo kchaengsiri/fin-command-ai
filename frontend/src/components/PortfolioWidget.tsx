@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -6,16 +7,61 @@ function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const mockPortfolio = [
-  { asset: "VOO", type: "US ETF", amount: 50, avgCost: 450.20, currentPrice: 470.50 },
-  { asset: "QQQ", type: "US ETF", amount: 30, avgCost: 410.00, currentPrice: 435.10 },
-  { asset: "Gold (GC=F)", type: "Commodity", amount: 5, avgCost: 2000.00, currentPrice: 2150.00 },
-  { asset: "SCB S&P500 (SSF)", type: "Thai Fund", amount: 10000, avgCost: 15.5, currentPrice: 16.2 }
-];
-
 export const PortfolioWidget = () => {
-  const totalValue = mockPortfolio.reduce((sum, item) => sum + (item.amount * item.currentPrice), 0);
-  const totalCost = mockPortfolio.reduce((sum, item) => sum + (item.amount * item.avgCost), 0);
+  const [portfolio, setPortfolio] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPortfolio = async () => {
+      try {
+        let apiUrl = "http://localhost:8000";
+        if (typeof import.meta.env.VITE_API_URL !== "undefined") {
+            apiUrl = import.meta.env.VITE_API_URL;
+        }
+        
+        const res = await fetch(`${apiUrl}/api/portfolio`);
+        if (!res.ok) throw new Error("Failed to load portfolio data");
+        const data = await res.json();
+        setPortfolio(data);
+      } catch (err: any) {
+        setError(err.message || "An error occurred");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchPortfolio();
+    const interval = setInterval(fetchPortfolio, 300000); // 5 min poll
+    return () => clearInterval(interval);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex-grow flex flex-col justify-center items-center min-h-[300px] rounded-2xl border border-gray-200/50 dark:border-white/10 bg-white/50 dark:bg-[#0a0a0a]/50 backdrop-blur-xl shadow-sm">
+        <div className="w-8 h-8 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
+        <p className="mt-4 text-sm text-gray-500 dark:text-gray-400 font-medium tracking-wide animate-pulse">Loading holdings...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full flex-grow flex flex-col justify-center items-center min-h-[300px] rounded-2xl border border-red-200/50 dark:border-red-900/30 bg-red-50/50 dark:bg-red-900/10 backdrop-blur-xl shadow-sm p-6 text-center">
+        <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center text-red-500 mb-3">
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 className="text-lg font-bold text-red-700 dark:text-red-400">Connection Error</h3>
+        <p className="mt-1 text-sm text-red-600/80 dark:text-red-400/80 max-w-sm">{error}</p>
+        <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 bg-white dark:bg-[#111] hover:bg-gray-50 dark:hover:bg-[#222] text-sm font-medium rounded-lg border border-gray-200 dark:border-gray-800 transition-colors shadow-sm">Try again</button>
+      </div>
+    );
+  }
+
+  const totalValue = portfolio.reduce((sum, item) => sum + (item.amount * item.currentPrice), 0);
+  const totalCost = portfolio.reduce((sum, item) => sum + (item.amount * item.avgCost), 0);
   const totalPL = totalValue - totalCost;
   const isPositive = totalPL >= 0;
 
@@ -50,7 +96,7 @@ export const PortfolioWidget = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-white/5">
-              {mockPortfolio.map((item, idx) => {
+              {portfolio.map((item, idx) => {
                 const value = item.amount * item.currentPrice;
                 const cost = item.amount * item.avgCost;
                 const pl = value - cost;
