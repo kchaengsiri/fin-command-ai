@@ -4,15 +4,15 @@
 A personal dashboard and command center to track real-time financial indicators (S&P500, VIX, Gold) and aggregate economic news. This tool empowers the user to make timely decisions for their mutual fund portfolio (SSF/RMF) using AI-driven insights.
 
 ## 2. Core Features (MVP)
-- [ ] **Market Overview Widget:** Fetch and display real-time or end-of-day data for VIX, S&P500, and Gold Spot.
+- [x] **Market Overview Widget:** Fetch and display real-time or end-of-day data for VIX, S&P500, and Gold Spot.
 - [ ] **News Aggregator:** Pull relevant economic news (e.g., Fed interest rates, geopolitical events, US employment data).
-- [ ] **Portfolio Tracker:** Log and simulate returns for specific funds (e.g., SCBS&P500, SCBSET50, SCBGOLDH).
+- [x] **Portfolio Tracker:** Log and simulate returns for specific funds (e.g., SCBS&P500, SCBSET50, SCBGOLDH).
 - [ ] **AI Insights Engine:** Send daily market data to Gemini Pro API to generate a brief risk assessment and portfolio adjustment suggestions.
 
 ## 3. Current Sprint & Status (Last Updated: 2026-03-20)
 *AI will automatically update this section.*
-- **In Progress:** Integrating Portfolio Tracker and AI Insights Engine.
-- **Completed:** Defined core AI workflow (`GEMINI.md`), PRD, project setup, and completed `MarketOverviewWidget` wired to FastAPI endpoints (`^VIX`, `^GSPC`, `GC=F`).
+- **In Progress:** Path B: Building the AI Command Interface for macroeconomic and portfolio analysis.
+- **Completed:** Defined core AI workflow (`GEMINI.md`), PRD, completed `MarketOverviewWidget` wired to FastAPI endpoints, **COMPLETED** `PortfolioWidget` and the `/api/portfolio` endpoint incorporating real Thai Fund data (SCB RMF/SSF).
 - **Blockers:** None.
 
 ## 4. Future Roadmap

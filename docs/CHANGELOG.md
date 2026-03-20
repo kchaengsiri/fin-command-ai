@@ -8,3 +8,6 @@
 - **[2026-03-20]** - `Added` - Set up complete Docker environment (`docker-compose.yml`, `frontend/Dockerfile`, `backend/Dockerfile`).
 - **[2026-03-20]** - `Added` - Installed and configured Tailwind CSS v3 in the Vite React frontend.
 - **[2026-03-20]** - `Added` - Implemented sleek `MarketOverviewWidget.tsx` React component with Tailwind, Framer Motion, and Lucide React to fetch and display live market data.
+- **[2026-03-20]** - `Added` - Built dynamic `PortfolioWidget.tsx` component and wired it to a new backend `/api/portfolio` FastAPI endpoint.
+- **[2026-03-20]** - `Added` - Integrated real Thai Fund data (SCB RMF, SSF) into local JSON storage.
+- **[2026-03-20]** - `Changed` - Formatted Portfolio metrics to reliably render THB (฿) currency natively.
