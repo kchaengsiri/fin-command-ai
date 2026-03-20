@@ -18,3 +18,4 @@
 - *19:45* - `Changed` - Migrated the backend from the deprecated `google-generativeai` package to the newly supported `google-genai` SDK.
 - *20:10* - `Added` - Implemented the AI Command Interface frontend (Spotlight input & API integration).
 - *20:50* - `Changed` - Refactored AI Command Interface UI into a persistent Right-Side Drawer with full chat history and continuous chat input.
+- *21:16* - `Added` - Implemented AIInsightsWidget frontend and completed all core MVP features.

@@ -16,6 +16,6 @@
 - **Status:** Completed (Full-Stack)
 
 ## 4. Feature Name: AI Insights Engine
-- **Description:** A service that aggregates current market snapshots (VIX, S&P500, Gold) and the user's mutual fund portfolio data to generate a brief, proactive daily risk assessment.
+- **Description:** A service that aggregates current market snapshots (VIX, S&P500, Gold) and the user's mutual fund portfolio data to generate a brief, proactive daily risk assessment. Displayed on the frontend as the "Daily Executive Brief".
 - **API/Endpoint Used:** `GET /api/ai-insights`
-- **Status:** Completed (Backend Only) - Frontend widget pending.
+- **Status:** Completed (Full-Stack)

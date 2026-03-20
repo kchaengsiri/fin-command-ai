@@ -1,6 +1,7 @@
 import { MarketOverviewWidget } from './components/MarketOverviewWidget';
 import { PortfolioWidget } from './components/PortfolioWidget';
 import { CommandChatWidget } from './components/CommandChatWidget';
+import { AIInsightsWidget } from './components/AIInsightsWidget';
 
 function App() {
   return (
@@ -22,6 +23,10 @@ function App() {
       <main className="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col gap-10">
         <MarketOverviewWidget />
         
+        <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent"></div>
+        
+        <AIInsightsWidget />
+
         <div className="h-px w-full bg-gradient-to-r from-transparent via-slate-200 dark:via-white/10 to-transparent"></div>
         
         <PortfolioWidget />

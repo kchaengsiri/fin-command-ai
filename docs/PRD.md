@@ -7,12 +7,12 @@ A personal dashboard and command center to track real-time financial indicators 
 - [x] **Market Overview Widget:** Fetch and display real-time or end-of-day data for VIX, S&P500, and Gold Spot.
 - [ ] **News Aggregator:** Pull relevant economic news (e.g., Fed interest rates, geopolitical events, US employment data).
 - [x] **Portfolio Tracker:** Log and simulate returns for specific funds (e.g., SCBS&P500, SCBSET50, SCBGOLDH).
-- [ ] **AI Insights Engine:** Send daily market data to Gemini Pro API to generate a brief risk assessment and portfolio adjustment suggestions.
+- [x] **AI Insights Engine:** Send daily market data to Gemini Pro API to generate a brief risk assessment and portfolio adjustment suggestions.
 
 ## 3. Current Sprint & Status (Last Updated: 2026-03-20)
 *AI will automatically update this section.*
-- **In Progress:** Building the frontend widget for the proactive `AI Insights Engine` to complete the MVP feature.
-- **Completed:** Defined core AI workflow, PRD, `MarketOverviewWidget`, `PortfolioWidget`, Backend for `AI Insights Engine`, and the full-stack interactive `AI Command Interface` (Right-Side Drawer).
+- **In Progress:** All core MVP features are fully complete! Planning next steps...
+- **Completed:** Defined core AI workflow, PRD, `MarketOverviewWidget`, `PortfolioWidget`, `AI Insights Engine` (Frontend & Backend), and the full-stack interactive `AI Command Interface` (Right-Side Drawer).
 - **Blockers:** None.
 
 ## 4. Future Roadmap
