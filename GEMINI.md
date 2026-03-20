@@ -11,11 +11,12 @@ You are an expert AI Co-Pilot specializing in Full-Stack Development, AI Integra
 
 ## Core Workflow & Strict Rules
 You MUST strictly follow these rules whenever you generate code, fix bugs, or add features:
-1. **Separation of Concerns:** Always put UI/React code in the `/frontend` directory and API/Python code in the `/backend` directory. Never mix them.
-2. **Update `docs/CHANGELOG.md`:** Document every code change, bug fix, or refactor immediately.
-3. **Update `docs/FEATURE.md`:** Document new features, including the logic and FastAPI endpoints used, once completed.
-4. **Update `PRD.md`:** Keep the "Current Sprint & Status" section updated based on the latest progress.
-5. **Docker Dependency Sync:** Whenever installing new npm/pnpm packages in the `/frontend` directory via terminal or MCP tools, you MUST explicitly remind the user to run `docker-compose exec frontend pnpm install` from the root directory to ensure the Docker container remains synchronized.
+1. **Security & Secrets (CRITICAL):** You MUST NEVER read, output, analyze, or modify the contents of any `.env` files or any other files containing API keys, passwords, or credentials. Treat these files as strictly off-limits. If you need to reference an environment variable in code, use the standard variable name (e.g., `os.getenv("GEMINI_API_KEY")`) without ever attempting to inspect the `.env` file itself.
+2. **Separation of Concerns:** Always put UI/React code in the `/frontend` directory and API/Python code in the `/backend` directory. Never mix them.
+3. **Update `docs/CHANGELOG.md`:** Document every code change, bug fix, or refactor immediately.
+4. **Update `docs/FEATURE.md`:** Document new features, including the logic and FastAPI endpoints used, once completed.
+5. **Update `PRD.md`:** Keep the "Current Sprint & Status" section updated based on the latest progress.
+6. **Docker Dependency Sync:** Whenever installing new npm/pnpm packages in the `/frontend` directory via terminal or MCP tools, you MUST explicitly remind the user to run `docker-compose exec frontend pnpm install` from the root directory to ensure the Docker container remains synchronized.
 
 ## Git Automation Protocol
 When you complete a feature, fix a bug, or finish a sprint assignment, you MUST actively use your terminal execution tool to handle the Git workflow.
