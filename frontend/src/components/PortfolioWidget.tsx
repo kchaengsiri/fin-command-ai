@@ -104,15 +104,15 @@ export const PortfolioWidget = () => {
 
                 return (
                   <motion.tr 
-                    key={item.asset}
+                    key={item.id || item.symbol}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.1 }}
                     className="hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="font-bold text-gray-900 dark:text-white">{item.asset}</div>
-                      <div className="text-xs text-gray-500">{item.type}</div>
+                      <div className="font-bold text-gray-900 dark:text-white">{item.symbol}</div>
+                      <div className="text-[11px] text-gray-500 truncate max-w-[250px]" title={item.name}>{item.name || item.type}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right font-medium">
                       {item.amount.toLocaleString()}
